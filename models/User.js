@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    validate: [validator.isEmail, 'Email non valida']
+    validate: [validator.isEmail, 'Email non valida'], // Validazione email
   },
   resetToken: { type: String },
   resetTokenExpire: { type: Date },
@@ -16,10 +16,10 @@ const userSchema = new mongoose.Schema({
     required: true,
   }
 }, {
-  timestamps: true,
+  timestamps: true, // Campi createdAt e updatedAt automatici
 });
 
-// Hook pre-save per hashare la password solo se modificata
+// Middleware pre-save per hashare la password se modificata
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
@@ -29,7 +29,7 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// Metodo per confrontare la password inserita con quella hashata
+// Metodo istanza per confrontare password inserita con quella hashata
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

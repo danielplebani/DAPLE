@@ -5,12 +5,12 @@ const ItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  user: { // 👈 nuovo campo per collegare l'item all'utente
+  user: { // Riferimento all'utente proprietario dell'item
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   }
 }, {
-  timestamps: true,
+  timestamps: true, // Campi createdAt e updatedAt automatici
 });
 
 module.exports = mongoose.model('Item', ItemSchema);

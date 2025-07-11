@@ -1,30 +1,45 @@
 require('dotenv').config();
 
 const express = require('express');
-const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const errorHandler = require('./middlewares/errorHandler');
 const itemsRoutes = require('./routes/items');
 const authRoutes = require('./routes/auth');
-
-const app = express();
+const path = require('path');
 const PORT = process.env.PORT || 5000;
 
-// Connessione DB
+const cors = require('cors');
+const app = express();
+
+// ✅ Middleware CORS
+app.use(cors({
+  origin: 'http://localhost:3000', // frontend
+  credentials: true // true solo se usi cookie
+}));
+
+// Connessione al database
 connectDB();
 
-// Middlewares
+// Middleware per il parsing del body JSON
 app.use(express.json());
-app.use(express.static('public'));
 
-// Rotte
+// Rotte API
 app.use('/api/items', itemsRoutes);
 app.use('/api/auth', authRoutes);
 
-// Middleware per errori (sempre alla fine)
+// Middleware per la gestione degli errori (va posizionato dopo le rotte)
 app.use(errorHandler);
 
-// Avvio server
+// Avvio del server
 app.listen(PORT, () => {
   console.log(`🚀 Server in ascolto su http://localhost:${PORT}`);
 });
+
+// Serve file React in produzione
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')));
+
+  app.get('*', (req, res) =>
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+  );
+}
