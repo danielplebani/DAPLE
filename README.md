@@ -52,11 +52,3 @@ Il frontend React consuma queste API, permettendo login, visualizzazione e gesti
 - Integrazione completa con le API backend
 
 ---
-
-## Avvio del progetto
-
-### Backend
-```bash
-cd backend
-npm install
-npm run dev
